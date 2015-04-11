@@ -1,13 +1,16 @@
 package com.example.service.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import com.example.dao.CustomerDao;
 import com.example.domain.Customer;
@@ -32,7 +35,7 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void shouldCreateCustomer() {
-		Customer expectedCustomer = new Customer("firstName", "lastName");
+		Customer expectedCustomer = getCustomer();
 
 		when(customerDaoMock.create(expectedCustomer)).thenReturn(
 				expectedCustomer);
@@ -43,9 +46,8 @@ public class CustomerServiceImplTest {
 
 	@Test
 	public void shouldUpdateCustomer() {
-		Customer expectedCustomer = new Customer("firstName", "lastName");
+		Customer expectedCustomer = getCustomer();
 		String customerId = "11";
-		expectedCustomer.setId(customerId);
 
 		List<Order> orders = new ArrayList<Order>();
 		Order order1 = new Order();
@@ -59,13 +61,37 @@ public class CustomerServiceImplTest {
 		when(orderServiceMock.update(order1)).thenReturn(new Order());
 		when(orderServiceMock.update(order2)).thenReturn(new Order());
 
-		when(customerDaoMock.update(expectedCustomer)).thenReturn(expectedCustomer) ;
-		
+		when(customerDaoMock.update(expectedCustomer)).thenReturn(
+				expectedCustomer);
+
 		Customer actualCustomer = customerService.update(expectedCustomer);
-		assertEquals(expectedCustomer, actualCustomer) ;
+		assertEquals(expectedCustomer, actualCustomer);
 
 		verify(orderServiceMock, times(1)).update(order1);
 		verify(orderServiceMock, times(1)).update(order2);
 
 	}
+
+	@Test
+	public void shouldUpdateCustomerEvenIfNoOrdersExistForIt() {
+		Customer expectedCustomer = getCustomer();
+		String customerId = "11";
+
+		when(orderServiceMock.getOrdersForCustomerId(customerId)).thenReturn(
+				null);
+		
+		when(customerDaoMock.update(expectedCustomer)).thenReturn(
+				expectedCustomer);
+
+		Customer actualCustomer = customerService.update(expectedCustomer);
+		assertEquals(expectedCustomer, actualCustomer);
+	}
+
+	private Customer getCustomer() {
+		Customer customer = new Customer("firstName", "lastName");
+		String customerId = "11";
+		customer.setId(customerId);
+		return customer;
+	}
+
 }

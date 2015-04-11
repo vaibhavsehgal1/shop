@@ -21,7 +21,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	public CustomerServiceImpl() {
 	}
-	
+
 	public CustomerServiceImpl(CustomerDao customerDao,
 			OrderService orderService) {
 		this.customerDao = customerDao;
@@ -50,14 +50,25 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public Customer update(Customer customer) {
-		List<Order> orders = orderService.getOrdersForCustomerId(customer.getId()) ;
-		for (Order order : orders) {
-			order.setCustomer(customer) ;
-		}
-		for (Order order : orders) {
-			orderService.update(order) ;
+		List<Order> orders = orderService.getOrdersForCustomerId(customer
+				.getId());
+		if ((orders != null) && (orders.size() > 0)) {
+			setCustomerInOrders(customer, orders);
+			updateOrders(orders);
 		}
 		return customerDao.update(customer);
+	}
+
+	private void updateOrders(List<Order> orders) {
+		for (Order order : orders) {
+			orderService.update(order);
+		}
+	}
+
+	private void setCustomerInOrders(Customer customer, List<Order> orders) {
+		for (Order order : orders) {
+			order.setCustomer(customer);
+		}
 	}
 
 	@Override

@@ -64,6 +64,9 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<Order> getOrdersForCustomerId(String customerId) {
 		Customer customer = customerService.getCustomerById(customerId);
+		if (customer == null) {
+			throw new NotFoundException();
+		}
 		return orderDao.getOrdersForCustomer(customer);
 	}
 
