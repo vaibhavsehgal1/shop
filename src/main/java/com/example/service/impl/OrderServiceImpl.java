@@ -11,6 +11,7 @@ import com.example.domain.Customer;
 import com.example.domain.Order;
 import com.example.domain.OrderComponents;
 import com.example.domain.Product;
+import com.example.exception.NotFoundException;
 import com.example.service.CustomerService;
 import com.example.service.OrderService;
 import com.example.service.ProductService;
@@ -27,7 +28,7 @@ public class OrderServiceImpl implements OrderService {
 
 	public OrderServiceImpl() {
 	}
-	
+
 	public OrderServiceImpl(OrderDao orderDao, CustomerService customerService,
 			ProductService productService) {
 		this.orderDao = orderDao;
@@ -39,11 +40,20 @@ public class OrderServiceImpl implements OrderService {
 	public Order create(OrderComponents orderComponents) {
 		String customerId = orderComponents.getCustomerId();
 		Customer customer = customerService.getCustomerById(customerId);
+		if (customer == null) {
+			throw new NotFoundException();
+		}
 		List<Product> products = new ArrayList<Product>();
 
 		List<String> productIds = orderComponents.getProductIds();
+
+		Product product = null;
 		for (String productId : productIds) {
-			products.add(productService.getProductById(productId));
+			product = productService.getProductById(productId);
+			if (product == null) {
+				throw new NotFoundException();
+			}
+			products.add(product);
 		}
 
 		Order order = new Order(customer, products);

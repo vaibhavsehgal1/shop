@@ -20,9 +20,6 @@ public class Order {
 		this.products = products;
 	}
 
-
-
-
 	public String getId() {
 		return id;
 	}
