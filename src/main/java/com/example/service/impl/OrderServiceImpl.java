@@ -18,11 +18,16 @@ import com.example.service.ProductService;
 @Service
 public class OrderServiceImpl implements OrderService {
 
+	@Autowired
 	private OrderDao orderDao;
+	@Autowired
 	private CustomerService customerService;
+	@Autowired
 	private ProductService productService;
 
-	@Autowired
+	public OrderServiceImpl() {
+	}
+	
 	public OrderServiceImpl(OrderDao orderDao, CustomerService customerService,
 			ProductService productService) {
 		this.orderDao = orderDao;

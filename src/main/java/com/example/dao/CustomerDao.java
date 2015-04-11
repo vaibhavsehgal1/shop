@@ -6,14 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.domain.Customer;
+import com.example.exception.NotFoundException;
 import com.example.repository.CustomerRepository;
 
 @Component
 public class CustomerDao {
 
+	@Autowired
 	private CustomerRepository customerRepository;
 
-	@Autowired
+	public CustomerDao() {
+	}
+
 	public CustomerDao(CustomerRepository customerRepository) {
 		this.customerRepository = customerRepository;
 	}
@@ -31,11 +35,22 @@ public class CustomerDao {
 	}
 
 	public Long deleteCustomerById(String id) {
-		return customerRepository.deleteCustomerById(id);
+		Customer customerFetchedFromDatastore = customerRepository.findById(id);
+		if (customerFetchedFromDatastore == null) {
+			throw new NotFoundException();
+		} else {
+			return customerRepository.deleteCustomerById(id);
+		}
 	}
 
 	public Customer update(Customer customer) {
-		return customerRepository.save(customer);
+		Customer customerFetchedFromDatastore = customerRepository
+				.findById(customer.getId());
+		if (customerFetchedFromDatastore == null) {
+			throw new NotFoundException();
+		} else {
+			return customerRepository.save(customer);
+		}
 	}
 
 	public Customer getCustomerById(String customerId) {

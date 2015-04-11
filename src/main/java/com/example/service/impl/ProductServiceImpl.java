@@ -12,9 +12,12 @@ import com.example.service.ProductService;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+	@Autowired
 	private ProductDao productDao;
 
-	@Autowired
+	public ProductServiceImpl() {
+	}
+	
 	public ProductServiceImpl(ProductDao productDao) {
 		this.productDao = productDao;
 	}

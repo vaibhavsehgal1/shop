@@ -19,9 +19,12 @@ import com.example.service.OrderService;
 @RequestMapping("/orders")
 public class OrderController {
 
+	@Autowired
 	private OrderService orderService;
 
-	@Autowired
+	public OrderController() {
+	}
+	
 	public OrderController(OrderService orderService) {
 		this.orderService = orderService;
 	}

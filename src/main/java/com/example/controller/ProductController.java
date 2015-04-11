@@ -18,9 +18,12 @@ import com.example.service.ProductService;
 @RequestMapping("/products")
 public class ProductController {
 
+	@Autowired
 	private ProductService productService;
 
-	@Autowired
+	public ProductController() {
+	}
+	
 	public ProductController(ProductService productService) {
 		this.productService = productService;
 	}

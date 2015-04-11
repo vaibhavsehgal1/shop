@@ -12,5 +12,7 @@ public interface OrderRepository extends MongoRepository<Order, Integer> {
 
 	List<Order> findByCustomer(Customer customer);
 
+	Order findById(String orderId);
+
 	Long deleteOrderById(String id);
 }

@@ -7,21 +7,30 @@ import org.springframework.stereotype.Service;
 
 import com.example.dao.CustomerDao;
 import com.example.domain.Customer;
+import com.example.domain.Order;
 import com.example.service.CustomerService;
+import com.example.service.OrderService;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-	private CustomerDao customerDao;
-
 	@Autowired
-	public CustomerServiceImpl(CustomerDao customerDao) {
+	private CustomerDao customerDao;
+	@Autowired
+	private OrderService orderService;
+
+	public CustomerServiceImpl() {
+	}
+	
+	public CustomerServiceImpl(CustomerDao customerDao,
+			OrderService orderService) {
 		this.customerDao = customerDao;
+		this.orderService = orderService;
 	}
 
 	@Override
 	public Customer create(Customer customer) {
-		return customerDao.create(customer) ;
+		return customerDao.create(customer);
 	}
 
 	@Override
@@ -41,6 +50,13 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public Customer update(Customer customer) {
+		List<Order> orders = orderService.getOrdersForCustomerId(customer.getId()) ;
+		for (Order order : orders) {
+			order.setCustomer(customer) ;
+		}
+		for (Order order : orders) {
+			orderService.update(order) ;
+		}
 		return customerDao.update(customer);
 	}
 

@@ -6,14 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.domain.Product;
+import com.example.exception.NotFoundException;
 import com.example.repository.ProductRepository;
 
 @Component
 public class ProductDao {
 
+	@Autowired
 	private ProductRepository productRepository;
 
-	@Autowired
+	public ProductDao() {
+	}
+
 	public ProductDao(ProductRepository productRepository) {
 		this.productRepository = productRepository;
 	}
@@ -31,10 +35,20 @@ public class ProductDao {
 	}
 
 	public Long deleteProductById(String id) {
-		return productRepository.deleteProductById(id);
+		Product productFetchedFromDatastore = productRepository.findById(id);
+		if (productFetchedFromDatastore == null) {
+			throw new NotFoundException();
+		} else {
+			return productRepository.deleteProductById(id);
+		}
 	}
 
 	public Product update(Product product) {
+		Product productFetchedFromDatastore = productRepository
+				.findById(product.getId());
+		if (productFetchedFromDatastore == null) {
+			throw new NotFoundException();
+		}
 		return productRepository.save(product);
 	}
 

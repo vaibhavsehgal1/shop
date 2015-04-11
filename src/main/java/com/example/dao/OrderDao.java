@@ -7,14 +7,18 @@ import org.springframework.stereotype.Component;
 
 import com.example.domain.Customer;
 import com.example.domain.Order;
+import com.example.exception.NotFoundException;
 import com.example.repository.OrderRepository;
 
 @Component
 public class OrderDao {
 
+	@Autowired
 	private OrderRepository orderRepository;
 
-	@Autowired
+	public OrderDao() {
+	}
+
 	public OrderDao(OrderRepository orderRepository) {
 		this.orderRepository = orderRepository;
 	}
@@ -32,10 +36,20 @@ public class OrderDao {
 	}
 
 	public Long deleteOrderById(String id) {
-		return orderRepository.deleteOrderById(id);
+		Order orderFetchedFromDatastore = orderRepository.findById(id);
+		if (orderFetchedFromDatastore == null) {
+			throw new NotFoundException();
+		} else {
+			return orderRepository.deleteOrderById(id);
+		}
 	}
 
 	public Order update(Order order) {
+		Order orderFetchedFromDatastore = orderRepository.findById(order
+				.getId());
+		if (orderFetchedFromDatastore == null) {
+			throw new NotFoundException();
+		}
 		return orderRepository.save(order);
 	}
 
