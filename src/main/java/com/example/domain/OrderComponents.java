@@ -7,6 +7,12 @@ public class OrderComponents {
 	private String customerId;
 	private List<String> productIds;
 
+	public OrderComponents(String customerId, List<String> productIds) {
+		super();
+		this.customerId = customerId;
+		this.productIds = productIds;
+	}
+
 	public String getCustomerId() {
 		return customerId;
 	}

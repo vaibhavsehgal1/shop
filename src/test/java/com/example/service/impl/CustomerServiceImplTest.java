@@ -67,8 +67,8 @@ public class CustomerServiceImplTest {
 		Customer actualCustomer = customerService.update(expectedCustomer);
 		assertEquals(expectedCustomer, actualCustomer);
 
-		verify(orderServiceMock, times(1)).update(order1);
-		verify(orderServiceMock, times(1)).update(order2);
+		verify(orderServiceMock, times(2)).update(order1);
+		verify(orderServiceMock, times(2)).update(order2);
 
 	}
 
